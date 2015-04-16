@@ -1,19 +1,15 @@
 class Entity:
 
     def __init__(self, name="Unknown", title="Unknown",
-                 health=100, mana=100, mana_regeneration_rate=2):
+                 health=100, mana=100):
         self.name = name
         self.title = title
         self.health = health
         self.mana = mana
-        self.mana_regeneration_rate = mana_regeneration_rate
         self.current_health = health
         self.current_mana = mana
         self.weapon = None
         self.spell = None
-
-    def known_as(self):
-        return "{} the {}".format(self.name, self.title)
 
     def get_health(self):
         return self.current_health
@@ -25,7 +21,7 @@ class Entity:
         return self.current_mana
 
     def can_cast(self):
-        pass
+        return self.current_mana >= self.spell.mana_cost
 
     def take_damage(self, damage_points):
         self.current_health -= damage_points
