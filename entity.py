@@ -51,11 +51,13 @@ class Entity:
     def equip(self, weapon):
         self.weapon = weapon
 
-    def attack(self):
-        if not self.has_weapon():
-            return 0
+    def learn(self, spell):
+        self.spell = spell
+
+    def attack(self, by):
+        if by == "weapon" and self.has_weapon:
+            return self.weapon.damage
+        elif by == "spell" and self.has_spell:
+            return self.spell.damage
         else:
-            if self.weapon.critical_hit():
-                return self.weapon.damage * 2
-            else:
-                return self.weapon.damage
+            return 0
