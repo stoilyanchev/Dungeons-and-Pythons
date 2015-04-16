@@ -56,4 +56,10 @@ class Entity:
         self.weapon = weapon
 
     def attack(self):
-        pass
+        if not self.has_weapon():
+            return 0
+        else:
+            if self.weapon.critical_hit():
+                return self.weapon.damage * 2
+            else:
+                return self.weapon.damage
