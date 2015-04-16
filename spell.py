@@ -24,14 +24,17 @@ class Spell:
         else:
             return ValueError
 
-    def cast_range(self, other):
+    def cast_range(self, my_index, other_index):
+        i1 = my_index[0]
+        j1 = my_index[1]
+        i2 = other_index[0]
+        j2 = other_index[1]
         if self.cast_range == 1:
-            return other.cast_range <= 2
+            return abs(i1 - i2) <= 1 and j1 == j2 or \
+                abs(j1 - j2) <= 1 and i1 == i2
         else:
-            dist = self.cast_range ** 2
-            lower_bound = self.cast_range - dist <= other.cast_range
-            upper_bound = self.cast_range + dist <= other.cast_range
-            return lower_bound or upper_bound
+            return abs(i1 - i2) <= self.cast_range and j1 == j2 or \
+                abs(j2 - j1) <= self.cast_range and i1 == i2
 
     def __eq__(self, other):
         return str(self) == str(other)
