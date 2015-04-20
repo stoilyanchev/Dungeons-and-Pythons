@@ -7,7 +7,7 @@ class Fight:
         self.hero = hero
         self.enemy = enemy
 
-    def attack(self):
+    def hero_attack(self):
         roll = randint(0, 1)
         PLAYERS = (self.hero, self.enemy)
         current_player = roll
