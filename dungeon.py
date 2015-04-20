@@ -6,6 +6,20 @@ from enemy import Enemy
 
 class Dungeon:
 
+    OBSTACLE = "#"
+    SPAWNING_POINT = "S"
+    ENEMY = "E"
+    EXIT = "G"
+    TREASURE = "T"
+    WALKABLE_PATH = "."
+    HERO = "H"
+    DIRECTIONS = {
+        "up": (-1, 0),
+        "down": (1, 0),
+        "left": (0, -1),
+        "right": (0, 1)
+    }
+
     def pick_treasure(number, hero):
         if number % 2 == 0:
             hero.take_mana(randint(0, 50) + 20)
@@ -18,7 +32,7 @@ class Dungeon:
             self.map = f.read()
         self.map = self.map.split("\n")
 
-        for x in self.get_pos_for_enemys():
+        for x in self.__get_pos_for_enemys():
             self.map[x[0]][x[1]] = Enemy()
 
     def print_map(self):
@@ -28,13 +42,13 @@ class Dungeon:
 
     def __get_free_slot_for_spawn(self):
         for x in self.map:
-            if "S" in x:
-                return (self.map.index(x), x.index("S"))
+            if Dungeon.SPAWNING_POINT in x:
+                return (self.map.index(x), x.index(Dungeon.SPAWNING_POINT))
         return (-1, -1)
 
-    def get_pos_for_enemys(self):
+    def __get_pos_for_enemys(self):
         return [(i, j) for (i, x) in enumerate(self.map)
-                for (j, y) in enumerate(x) if y == "E"]
+                for (j, y) in enumerate(x) if y == Dungeon.ENEMY]
 
     def spawn(self, hero):
         if not isinstance(hero, Hero):
@@ -46,59 +60,40 @@ class Dungeon:
             return True
         return False
 
+    def __can_make_move(self, point):
+        x, y = point
+        if x < 0 or x >= len(self.map):
+            return False
+
+        if y < 0 or y >= len(self.map[0]):
+            return False
+
+        if self.__map[x][y] == Dungeon.OBSTACLE:
+            return False
+        return True
+
     def move_hero(self, direction):
-        values = ['up', 'down', 'left', 'right']
-        if direction not in values:
+        if direction not in self.DIRECTIONS:
             return False
         else:
-            can_move = False
-            moved_position = (0, 0)
-            pos = self.hero_index
-            if direction == "up" and \
-                    self.hero_index[0] > 0 and \
-                    self.map[pos[0] - 1][pos[1]] != "#":
-                can_move = True
-                moved_position = (pos[0] - 1, pos[1])
-            elif direction == "down" and \
-                    self.hero_index[0] < len(self.map) - 1 and \
-                    self.map[pos[0] + 1][pos[1]] != "#":
-                can_move = True
-                moved_position = (pos[0] + 1, pos[1])
-            elif direction == "left" and \
-                    self.hero_index[1] > 0 and \
-                    self.map[pos[0]][pos[1] - 1] != "#":
-                can_move = True
-                moved_position = (pos[0], pos[1] - 1)
-            elif direction == "right" and \
-                    self.hero_index[1] < len(self.map[0]) - 1 \
-                    and self.map[pos[0] - 1][pos[1] + 1] != "#":
-                can_move = True
-                moved_position = (pos[0], pos[1] + 1)
-            else:
-                return False
-            self.map[pos[0]][pos[1]].get_mana(
-                self.map[pos[0]][pos[1]].mana_regeneration_rate)
-            started_fight = False
-            if can_move:
-                i = moved_position[0]
-                j = moved_position[1]
-                self.map[i][j] = "H"
-                self.map[pos[0]][pos[1]] = "."
-                if self.map[i][j] == "T":
-                    self.pick_treasure(randint(1, 50),
-                                       self.map[pos[0]][pos[1]])
-                elif self.map[i][j] == "E":
-                    started_fight = True
-                    # START FIGHT
-            if not started_fight:
-                try:
-                    mode = bool(raw_input("Do you want fight 0/1"))
-                except ValueError:
-                    print "Not a {0 or 1}"
-                if mode:
-                    StartFight()
-                    # START FIGHT
-            return True
+            i = self.hero_index[0] + (self.DIRECTIONS[direction])[0]
+            j = self.hero_index[1] + (self.DIRECTIONS[direction])[1]
+            positon = (i, j)
+            if self.__can_make_move(positon):
+                symbol = self.map[positon[0]][positon[1]]
+                hero = self.map[self.hero_index[0]][self.hero_index[1]]
+                if symbol == Dungeon.ENEMY:
+                    # Start with Fight self.start_fight
+                    return False
+                if symbol == Dungeon.TREASURE:
+                    # self pick treasure and add to hero!
+                    pass
+                symbol = Dungeon.WALKABLE_PATH
+                self.map[self.hero_index[0]][self.hero_index[1]] = symbol
+                self.map[positon[0]][positon[1]] = hero
+                self.hero_index = positon
+                return True
+            return False
 
 
 if __name__ == '__main__':
