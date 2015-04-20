@@ -78,9 +78,9 @@ class Dungeon:
         else:
             i = self.hero_index[0] + (self.DIRECTIONS[direction])[0]
             j = self.hero_index[1] + (self.DIRECTIONS[direction])[1]
-            positon = (i, j)
-            if self.__can_make_move(positon):
-                symbol = self.map[positon[0]][positon[1]]
+            position = (i, j)
+            if self.__can_make_move(position):
+                symbol = self.map[position[0]][position[1]]
                 hero = self.map[self.hero_index[0]][self.hero_index[1]]
                 if symbol == Dungeon.ENEMY:
                     # Start with Fight self.start_fight
@@ -88,12 +88,17 @@ class Dungeon:
                 if symbol == Dungeon.TREASURE:
                     # self pick treasure and add to hero!
                     pass
-                symbol = Dungeon.WALKABLE_PATH
-                self.map[self.hero_index[0]][self.hero_index[1]] = symbol
-                self.map[positon[0]][positon[1]] = hero
-                self.hero_index = positon
+                elif symbol == Dungeon.EXIT:
+                    # change map on dungeon
+                    pass
+                else:
+                    symbol = Dungeon.WALKABLE_PATH
+                    self.map[self.hero_index[0]][self.hero_index[1]] = symbol
+                    self.map[position[0]][position[1]] = hero
+                    self.hero_index = position
                 return True
             return False
+
 
 def hero_attack(self, by):
     pass
