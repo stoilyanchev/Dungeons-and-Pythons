@@ -72,6 +72,8 @@ class Dungeon:
             if can_move:
                 i = moved_position[0]
                 j = moved_position[1]
+                self.map[i][j] = "H"
+                self.map[pos[0]][pos[1]] = "."
                 if self.map[i][j] == "T":
                     self.pick_treasure(randint(1, 50),
                                        self.map[pos[0]][pos[1]])
