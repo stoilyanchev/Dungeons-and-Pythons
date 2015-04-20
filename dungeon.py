@@ -90,6 +90,8 @@ class Dungeon:
                     # START FIGHT
             return True
 
+def hero_attack(self, by):
+    pass
 
 if __name__ == '__main__':
     test = Dungeon("level1.txt")
