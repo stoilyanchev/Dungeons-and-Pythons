@@ -1,6 +1,7 @@
 # import json
 from random import randint
 from hero import Hero
+from enemy import Enemy
 
 
 class Dungeon:
@@ -17,6 +18,9 @@ class Dungeon:
             self.map = f.read()
         self.map = self.map.split("\n")
 
+        for x in self.get_pos_for_enemys():
+            self.map[x[0]][x[1]] = Enemy()
+
     def print_map(self):
         # print(json.dumps(self.map, indent=4))
         for x in self.map:
@@ -28,7 +32,13 @@ class Dungeon:
                 return (self.map.index(x), x.index("S"))
         return (-1, -1)
 
+    def get_pos_for_enemys(self):
+        return [(i, j) for (i, x) in enumerate(self.map)
+                for (j, y) in enumerate(x) if y == "E"]
+
     def spawn(self, hero):
+        if not isinstance(hero, Hero):
+            return False
         slot = self.__get_free_slot_for_spawn()
         if slot != (-1, -1):
             self.map[slot[0]][slot[1]] = hero
